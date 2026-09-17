@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SK Academy — Mock Test 02</title>
+<meta name="description" content="SK Academy Sindh University Admission Test Mock Test 02">
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#0B1F3A}
+header{background:#0B1F3A;color:white;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;font-size:21px} .brand span{color:#F7931E}
+.screen{display:none;min-height:calc(100vh - 65px)} .screen.active{display:block}
+.container{max-width:850px;margin:auto;padding:28px 16px}
+.card{background:white;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(11,31,58,.08);border:1px solid #e7ebf2}
+.hero{text-align:center;margin-top:7vh} h1{font-size:clamp(30px,7vw,52px);margin:10px 0} h2{margin-top:0} .orange{color:#F7931E}
+.muted{color:#65738a;line-height:1.6} input{width:100%;padding:15px;border:1px solid #d6dce6;border-radius:10px;font-size:16px;margin:12px 0 18px}
+button{font:inherit;cursor:pointer} .primary{background:#F7931E;color:white;border:0;padding:14px 22px;border-radius:10px;font-weight:700;width:100%}
+.topline{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:18px} .badge{background:#fff2e3;color:#b85d00;padding:7px 10px;border-radius:99px;font-size:13px;font-weight:700}
+.timer{font-weight:800;font-size:21px;background:#0B1F3A;color:white;padding:9px 13px;border-radius:9px} .timer.danger{background:#b42318}
+.progress{height:8px;background:#e9edf3;border-radius:99px;overflow:hidden;margin:12px 0 24px} .progress div{height:100%;background:#F7931E;width:0}
+.question{font-size:23px;line-height:1.45;font-weight:700;margin:12px 0 24px}
+.option{width:100%;text-align:left;background:white;border:1px solid #dce2ea;border-radius:12px;padding:15px;margin:7px 0;display:flex;gap:12px;align-items:center;color:#18283e}
+.option.selected{border:2px solid #F7931E;background:#fff8f0} .letter{width:30px;height:30px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-weight:800;flex:none}
+.nav{display:flex;gap:10px;margin-top:20px} .nav button{flex:1;padding:13px;border-radius:10px;border:1px solid #ccd4df;background:white;font-weight:700} .nav button:last-child{background:#0B1F3A;color:white;border-color:#0B1F3A} .nav button:disabled{opacity:.4}
+.submit{margin-top:12px;background:#e54848!important;border-color:#e54848!important;color:white!important}
+.resultGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0} .stat{padding:18px;background:#f7f9fc;border-radius:12px;text-align:center} .stat b{display:block;font-size:25px}
+@media(max-width:600px){.card{padding:20px} .question{font-size:19px} .resultGrid{grid-template-columns:repeat(2,1fr)} header{padding:14px 16px}}
+</style>
+</head>
+<body>
+<header><div class="brand">SK <span>ACADEMY</span></div><div>SUAT • Mock Test 02</div></header>
+
+<section id="startScreen" class="screen active">
+<div class="container"><div class="card hero">
+<div class="badge">SINDH UNIVERSITY ADMISSION TEST PREPARATION</div>
+<h1>Premium Mock Test <span class="orange">02</span></h1>
+<p class="muted">100 MCQs • 60 Minutes • English • General Knowledge • General Science • Mathematics • Simple IQ</p>
+<h3 style="text-align:left">Student Name</h3>
+<input id="studentName" placeholder="Enter your full name">
+<button id="startBtn" class="primary">Start Mock Test →</button>
+<p class="muted" style="font-size:13px">Choose one answer for each question. Your score is calculated automatically after submission.</p>
+</div></div>
+</section>
+
+<section id="testScreen" class="screen">
+<div class="container"><div class="card">
+<div class="topline"><div><b id="studentDisplay"></b><div id="qNumber" class="muted"></div></div><div id="timer" class="timer">60:00</div></div>
+<div class="progress"><div id="progressBar"></div></div>
+<div id="progressText" class="muted"></div>
+<div id="subject" class="badge" style="display:inline-block;margin-top:15px"></div>
+<div id="questionText" class="question"></div>
+<div id="options"></div>
+<div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
+<button id="submitBtn" class="nav submit" style="width:100%;padding:13px;border-radius:10px">Submit Test</button>
+</div></div>
+</section>
+
+<section id="resultScreen" class="screen">
+<div class="container"><div class="card">
+<div class="badge">RESULT</div><h2>Test Completed 🎉</h2>
+<p class="muted"><b id="finalName"></b> — <span id="submitNote"></span></p>
+<div class="resultGrid">
+<div class="stat"><b id="score">0 / 100</b>Score</div>
+<div class="stat"><b id="percentage">0%</b>Percentage</div>
+<div class="stat"><b id="correct">0</b>Correct</div>
+<div class="stat"><b id="wrong">0</b>Wrong</div>
+</div>
+<div class="stat"><b id="unanswered">0</b>Unanswered</div>
+<br>
+<button id="reviewBtn" class="primary">Review Answers</button>
+<br><br>
+<button id="restartBtn" class="primary" style="background:#0B1F3A">Take Test Again</button>
+</div></div>
+</section>
+<script>
+const QUESTIONS = [{"subject": "English", "q": "Choose the word closest in meaning to “abundant”.", "options": ["Scarce", "Plentiful", "Weak", "Ancient"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "Choose the correctly spelled word.", "options": ["Enviroment", "Environment", "Envirnment", "Enviornment"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "Neither the teacher nor the students ___ ready.", "options": ["was", "were", "is", "has"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "The opposite of “expand” is:", "options": ["Increase", "Extend", "Contract", "Enlarge"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "“She has been studying for two hours” is in the:", "options": ["Present perfect", "Present continuous", "Present perfect continuous", "Past perfect"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "If I ___ you, I would revise this topic.", "options": ["am", "was", "were", "be"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "Identify the noun in: “Honesty is the best policy.”", "options": ["is", "best", "Honesty", "the"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "A person who writes poems is called a:", "options": ["Poet", "Painter", "Pilot", "Publisher"], "answer": 0, "explanation": ""}, {"subject": "English", "q": "Choose the correct article: He is ___ honest man.", "options": ["a", "an", "the", "no article"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "The idiom “once in a blue moon” means:", "options": ["Every day", "Very rarely", "At night", "Immediately"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "Choose the correct sentence.", "options": ["He don't know me.", "He doesn't knows me.", "He doesn't know me.", "He not know me."], "answer": 2, "explanation": ""}, {"subject": "English", "q": "The plural of “criterion” is:", "options": ["Criterions", "Criteria", "Criteriones", "Criterion"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "In “The book was written by Ali”, the voice is:", "options": ["Active", "Passive", "Interrogative", "Imperative"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "Choose the synonym of “rapid”.", "options": ["Slow", "Swift", "Late", "Dull"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "She is good ___ mathematics.", "options": ["in", "on", "at", "for"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "“Although it was raining, we continued” is a:", "options": ["Simple sentence", "Compound sentence", "Complex sentence", "Phrase"], "answer": 2, "explanation": ""}, {"subject": "English", "q": "The comparative form of “little” meaning amount is:", "options": ["Littler", "Less", "Least", "Few"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "Choose the correct reported speech: He said, “I am tired.”", "options": ["He said that I am tired.", "He said that he was tired.", "He says he was tired.", "He said that he is tired."], "answer": 1, "explanation": ""}, {"subject": "English", "q": "A government by the people is called:", "options": ["Monarchy", "Democracy", "Dictatorship", "Aristocracy"], "answer": 1, "explanation": ""}, {"subject": "English", "q": "“Look after” means:", "options": ["Search", "Take care of", "Look behind", "Ignore"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The capital of Pakistan is:", "options": ["Karachi", "Lahore", "Islamabad", "Peshawar"], "answer": 2, "explanation": ""}, {"subject": "General Knowledge", "q": "The largest continent by area is:", "options": ["Africa", "Asia", "Europe", "North America"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The currency of Japan is:", "options": ["Won", "Yuan", "Yen", "Ringgit"], "answer": 2, "explanation": ""}, {"subject": "General Knowledge", "q": "The United Nations headquarters is in:", "options": ["Geneva", "New York", "Paris", "London"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The largest ocean is:", "options": ["Atlantic", "Indian", "Arctic", "Pacific"], "answer": 3, "explanation": ""}, {"subject": "General Knowledge", "q": "The national animal of Pakistan is:", "options": ["Lion", "Markhor", "Tiger", "Deer"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The chemical symbol for gold is:", "options": ["Ag", "Au", "Gd", "Go"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The first month of the Islamic calendar is:", "options": ["Ramadan", "Muharram", "Safar", "Rajab"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The headquarters of the World Health Organization is in:", "options": ["Rome", "Geneva", "Vienna", "Madrid"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The smallest planet in the Solar System is:", "options": ["Mars", "Mercury", "Venus", "Neptune"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The longest river in Pakistan is:", "options": ["Indus", "Jhelum", "Chenab", "Ravi"], "answer": 0, "explanation": ""}, {"subject": "General Knowledge", "q": "Which instrument measures atmospheric pressure?", "options": ["Thermometer", "Barometer", "Hygrometer", "Ammeter"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The study of earthquakes is called:", "options": ["Ecology", "Seismology", "Geology", "Meteorology"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "Which country is known as the Land of the Rising Sun?", "options": ["China", "Japan", "Thailand", "Korea"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "The largest hot desert in the world is:", "options": ["Gobi", "Sahara", "Thar", "Kalahari"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "Which metal is liquid at room temperature?", "options": ["Iron", "Copper", "Mercury", "Aluminium"], "answer": 2, "explanation": ""}, {"subject": "General Knowledge", "q": "The Earth completes one revolution around the Sun in approximately:", "options": ["24 hours", "30 days", "365 days", "12 hours"], "answer": 2, "explanation": ""}, {"subject": "General Knowledge", "q": "Which is a renewable energy source?", "options": ["Coal", "Natural gas", "Solar energy", "Petroleum"], "answer": 2, "explanation": ""}, {"subject": "General Knowledge", "q": "The device used to measure temperature is:", "options": ["Barometer", "Thermometer", "Voltmeter", "Altimeter"], "answer": 1, "explanation": ""}, {"subject": "General Knowledge", "q": "Which planet is famous for its prominent rings?", "options": ["Venus", "Saturn", "Mercury", "Earth"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "The basic unit of life is the:", "options": ["Tissue", "Cell", "Organ", "Atom"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "Plants mainly absorb which gas for photosynthesis?", "options": ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "The SI unit of force is:", "options": ["Joule", "Watt", "Newton", "Pascal"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "Water boils at sea level at:", "options": ["0°C", "50°C", "100°C", "212°C below zero"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "The organ that pumps blood is the:", "options": ["Lung", "Kidney", "Heart", "Liver"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "DNA stands for:", "options": ["Deoxyribonucleic Acid", "Dynamic Nuclear Acid", "Double Nitrogen Atom", "Deoxygenated Nucleic Acid"], "answer": 0, "explanation": ""}, {"subject": "General Science", "q": "A substance with pH less than 7 is generally:", "options": ["Acidic", "Neutral", "Basic", "Metallic"], "answer": 0, "explanation": ""}, {"subject": "General Science", "q": "Sound cannot travel through:", "options": ["Water", "Steel", "Air", "Vacuum"], "answer": 3, "explanation": ""}, {"subject": "General Science", "q": "The process by which liquid changes into gas is:", "options": ["Condensation", "Freezing", "Evaporation", "Melting"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "Which vitamin is produced in skin with sunlight exposure?", "options": ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], "answer": 3, "explanation": ""}, {"subject": "General Science", "q": "The red color of blood is mainly due to:", "options": ["Insulin", "Hemoglobin", "Calcium", "Keratin"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "The nearest star to Earth is:", "options": ["Sirius", "The Sun", "Polaris", "Alpha Centauri"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "Which force pulls objects toward Earth?", "options": ["Friction", "Magnetism", "Gravity", "Buoyancy"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "The human body normally has how many pairs of chromosomes?", "options": ["22", "23", "24", "46"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "Which part of a plant absorbs water from soil?", "options": ["Flower", "Root", "Fruit", "Leaf"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "Electric current is measured in:", "options": ["Volt", "Ampere", "Ohm", "Joule"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "Which blood cells help fight infection?", "options": ["Red blood cells", "White blood cells", "Platelets", "Plasma"], "answer": 1, "explanation": ""}, {"subject": "General Science", "q": "The hardest natural substance is:", "options": ["Iron", "Quartz", "Diamond", "Graphite"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "Which gas is most abundant in Earth's atmosphere?", "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], "answer": 2, "explanation": ""}, {"subject": "General Science", "q": "A balanced diet should contain:", "options": ["Only carbohydrates", "Only proteins", "A variety of essential nutrients", "Only fats"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "What is 15% of 200?", "options": ["20", "25", "30", "35"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "If x + 7 = 19, x equals:", "options": ["10", "11", "12", "13"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "The average of 10, 20 and 30 is:", "options": ["15", "20", "25", "30"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "2³ × 2² equals:", "options": ["16", "32", "64", "8"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "A triangle has angles 50° and 60°. The third angle is:", "options": ["60°", "70°", "80°", "90°"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "If a = 5 and b = 3, a² − b² equals:", "options": ["16", "22", "25", "34"], "answer": 0, "explanation": ""}, {"subject": "Mathematics", "q": "The ratio 12:18 in simplest form is:", "options": ["2:3", "3:2", "4:5", "6:9"], "answer": 0, "explanation": ""}, {"subject": "Mathematics", "q": "A shop gives 10% discount on Rs. 500. Sale price is:", "options": ["Rs. 450", "Rs. 460", "Rs. 490", "Rs. 550"], "answer": 0, "explanation": ""}, {"subject": "Mathematics", "q": "3/4 expressed as a percentage is:", "options": ["25%", "50%", "75%", "80%"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "If 5 workers complete a task in 12 days, at the same rate 10 workers take:", "options": ["3 days", "6 days", "12 days", "24 days"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "The perimeter of a square with side 8 cm is:", "options": ["16 cm", "24 cm", "32 cm", "64 cm"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "If 2x = 18, x is:", "options": ["7", "8", "9", "10"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "What is 0.25 × 80?", "options": ["15", "20", "25", "30"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "A number divisible by both 2 and 3 is always divisible by:", "options": ["4", "5", "6", "9"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "The next number in 2, 6, 12, 20, 30, ___ is:", "options": ["36", "40", "42", "44"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "If a train travels 60 km in 1.5 hours, its average speed is:", "options": ["30 km/h", "40 km/h", "45 km/h", "90 km/h"], "answer": 1, "explanation": ""}, {"subject": "Mathematics", "q": "The area of a rectangle 12 cm by 5 cm is:", "options": ["17 cm²", "34 cm²", "60 cm²", "120 cm²"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "What is √144?", "options": ["10", "11", "12", "14"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "If 4 pens cost Rs. 120, 7 pens cost:", "options": ["Rs. 180", "Rs. 200", "Rs. 210", "Rs. 240"], "answer": 2, "explanation": ""}, {"subject": "Mathematics", "q": "2/5 + 1/5 equals:", "options": ["1/5", "2/5", "3/5", "4/5"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Find the next number: 3, 6, 12, 24, __", "options": ["36", "42", "48", "54"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Find the odd one out:", "options": ["Apple", "Mango", "Carrot", "Banana"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Book is to Reading as Fork is to:", "options": ["Writing", "Eating", "Walking", "Sleeping"], "answer": 1, "explanation": ""}, {"subject": "Simple IQ", "q": "If CAT is coded as DBU, DOG is coded as:", "options": ["EPH", "EOG", "CPG", "FPH"], "answer": 0, "explanation": ""}, {"subject": "Simple IQ", "q": "Find the missing number: 5, 10, 20, 40, __", "options": ["60", "70", "80", "90"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Which number does not belong? 2, 3, 5, 9, 11", "options": ["2", "5", "9", "11"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "If all roses are flowers and some flowers fade, which statement is definitely true?", "options": ["All roses fade", "Some roses are not flowers", "All roses are flowers", "No flowers are roses"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "A clock shows 3:00. The angle between the hands is:", "options": ["30°", "60°", "90°", "180°"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Complete the pattern: AZ, BY, CX, DW, __", "options": ["EV", "FU", "EX", "DV"], "answer": 0, "explanation": ""}, {"subject": "Simple IQ", "q": "If yesterday was Monday, tomorrow will be:", "options": ["Monday", "Tuesday", "Wednesday", "Thursday"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Which is the mirror image relationship of LEFT?", "options": ["TFEL", "LEFT", "TFE L", "FLET"], "answer": 0, "explanation": ""}, {"subject": "Simple IQ", "q": "A is taller than B. B is taller than C. Who is shortest?", "options": ["A", "B", "C", "Cannot know"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "Find the next: 1, 4, 9, 16, __", "options": ["20", "24", "25", "36"], "answer": 2, "explanation": ""}, {"subject": "Simple IQ", "q": "If 7 + 3 = 410 and 5 + 2 = 37 by a pattern of concatenation, then 6 + 4 =:", "options": ["210", "410", "102", "610"], "answer": 0, "explanation": ""}, {"subject": "Simple IQ", "q": "Which pair has the same relationship: Bird:Fly :: Fish:__", "options": ["Run", "Swim", "Jump", "Crawl"], "answer": 1, "explanation": ""}, {"subject": "Simple IQ", "q": "A man walks north, then turns right. He is now walking:", "options": ["South", "East", "West", "North"], "answer": 1, "explanation": ""}, {"subject": "Simple IQ", "q": "If PEN is coded QFO, then MAP is coded:", "options": ["NBQ", "MBQ", "NBO", "LBP"], "answer": 0, "explanation": ""}, {"subject": "Simple IQ", "q": "Find the missing letter: A, C, F, J, O, __", "options": ["T", "U", "V", "W"], "answer": 1, "explanation": ""}, {"subject": "Simple IQ", "q": "A family has three sons, and each son has one sister. How many children are there?", "options": ["3", "4", "6", "7"], "answer": 1, "explanation": ""}, {"subject": "Simple IQ", "q": "Which number is the odd one out?", "options": ["8", "27", "64", "100"], "answer": 3, "explanation": ""}];
+const TEST_TITLE = "SK Academy — Premium Mock Test 02";
+const TEST_DURATION_MIN = 60;
+let current = 0;
+let answers = Array(QUESTIONS.length).fill(null);
+let remaining = TEST_DURATION_MIN * 60;
+let timer = null;
+let student = JSON.parse(localStorage.getItem("sk_student") || "null");
+
+const $ = id => document.getElementById(id);
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(x => x.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function startTest() {
+  const name = $("studentName").value.trim();
+  if (!name) return alert("Please enter your name.");
+  student = {name, started: new Date().toISOString()};
+  localStorage.setItem("sk_student", JSON.stringify(student));
+  $("studentDisplay").textContent = name;
+  show("testScreen");
+  render();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timer);
+  timer = setInterval(() => {
+    remaining--;
+    updateTimer();
+    if (remaining <= 0) {
+      clearInterval(timer);
+      submitTest(true);
+    }
+  }, 1000);
+  updateTimer();
+}
+
+function updateTimer() {
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  $("timer").textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  $("timer").classList.toggle("danger", remaining <= 300);
+}
+
+function render() {
+  const item = QUESTIONS[current];
+  $("qNumber").textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  $("subject").textContent = item.subject;
+  $("questionText").textContent = item.q;
+  $("options").innerHTML = item.options.map((opt,i) => `
+    <button class="option ${answers[current]===i ? "selected":""}" onclick="choose(${i})">
+      <span class="letter">${String.fromCharCode(65+i)}</span>
+      <span>${opt}</span>
+    </button>`).join("");
+  $("prev").disabled = current === 0;
+  $("next").textContent = current === QUESTIONS.length-1 ? "Review" : "Next";
+  updateProgress();
+}
+
+function choose(i) {
+  answers[current] = i;
+  render();
+}
+
+function next() {
+  if (current < QUESTIONS.length-1) current++;
+  render();
+}
+
+function prev() {
+  if (current > 0) current--;
+  render();
+}
+
+function updateProgress() {
+  const done = answers.filter(x => x !== null).length;
+  $("progressText").textContent = `${done} / ${QUESTIONS.length} answered`;
+  $("progressBar").style.width = `${done / QUESTIONS.length * 100}%`;
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(x => x === null).length;
+  if (confirm(`Submit test now?\n\nAnswered: ${QUESTIONS.length-unanswered}\nUnanswered: ${unanswered}`)) submitTest(false);
+}
+
+function submitTest(auto) {
+  clearInterval(timer);
+  let correct = 0;
+  answers.forEach((a,i) => { if (a === QUESTIONS[i].answer) correct++; });
+  const wrong = answers.filter((a,i) => a !== null && a !== QUESTIONS[i].answer).length;
+  const unanswered = answers.filter(a => a === null).length;
+  const percentage = correct / QUESTIONS.length * 100;
+  $("finalName").textContent = student?.name || "Student";
+  $("score").textContent = `${correct} / ${QUESTIONS.length}`;
+  $("percentage").textContent = `${percentage.toFixed(1)}%`;
+  $("correct").textContent = correct;
+  $("wrong").textContent = wrong;
+  $("unanswered").textContent = unanswered;
+  $("submitNote").textContent = auto ? "Time ended — your test was submitted automatically." : "Test submitted successfully.";
+  localStorage.setItem("sk_last_result", JSON.stringify({student,correct,wrong,unanswered,percentage,answers}));
+  show("resultScreen");
+}
+
+function reviewAnswers() {
+  current = 0;
+  show("testScreen");
+  render();
+  clearInterval(timer);
+  $("timer").textContent = "REVIEW";
+}
+
+function resetTest() {
+  localStorage.removeItem("sk_student");
+  location.reload();
+}
+
+$("startBtn").onclick = startTest;
+$("prev").onclick = prev;
+$("next").onclick = next;
+$("submitBtn").onclick = confirmSubmit;
+$("reviewBtn").onclick = reviewAnswers;
+$("restartBtn").onclick = resetTest;
+$("studentName").addEventListener("keydown", e => { if(e.key==="Enter") startTest(); });
+</script>
+</body></html>
